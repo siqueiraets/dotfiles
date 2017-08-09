@@ -35,8 +35,12 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'godlygeek/tabular'
 Plugin 'majutsushi/tagbar'
+Plugin 'Shougo/neosnippet.vim'
+if has('nvim')
+Plugin 'Shougo/deoplete.nvim'
+else
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'garbas/vim-snipmate'
+endif
 Plugin 'honza/vim-snippets'
 
 Plugin 'klen/python-mode'
