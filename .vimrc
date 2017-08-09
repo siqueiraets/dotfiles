@@ -8,8 +8,8 @@ nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
 nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
 nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
 
-if filereadable(expand("~/.vimrc.bundles"))
-source ~/.vimrc.bundles
+if filereadable(expand("~/.vim/.vimrc.bundles"))
+source ~/.vim/.vimrc.bundles
 endif
 
 set background=dark         " Assume a dark background
@@ -183,8 +183,8 @@ let g:indent_guides_guide_size = 1
 let g:indent_guides_enable_on_vim_startup = 1
 
 " Load cscope mappings (Download from http://cscope.sourceforge.net/cscope_maps.vim)
-if filereadable(expand("~/.cscope_maps.vim"))
-    source ~/.cscope_maps.vim
+if filereadable(expand("~/.vim/cscope_maps.vim"))
+    source ~/.vim/cscope_maps.vim
 endif
 
 " Pt-br keyboard adaptation
