@@ -204,3 +204,7 @@ nmap <leader>z :call ExecuteClangAutoFormat()<cr>
 nmap <Tab> :bn<cr>
 nmap <S-Tab> :bp<cr>
 
+" Map shortcuts to 'maximize/minimize' screen
+nmap <leader>ff :res<cr> :vertical res<cr>
+nmap <leader>fe :winc =<cr>
+
