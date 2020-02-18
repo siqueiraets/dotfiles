@@ -2,7 +2,8 @@ set nocompatible        " Must be first line
 set shell=/bin/zsh
 
 " Adjust tmux navigator bindings
-let tmux_navigator_no_mappings = 1
+let g:tmux_navigator_no_mappings = 1
+let g:tmux_navigator_disable_when_zoomed = 1
 nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
 nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
 nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
@@ -55,12 +56,15 @@ let g:solarized_termcolors=256
 let g:solarized_termtrans=1
 let g:solarized_contrast="normal"
 let g:solarized_visibility="normal"
-color solarized
+" color solarized
+"
+"colorscheme solarized
+colorscheme peaksea
 
 set tabpagemax=15           " Only show 15 tabs
 set showmode                " Display the current mode
 
-set cursorline              " Highlight current line
+" set cursorline              " Highlight current line
 set ruler                   " Show the ruler
 set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
 set showcmd                 " Show partial commands in status line and
@@ -149,7 +153,8 @@ vnoremap . :normal .<CR>
 map zl zL
 map zh zH
 
-map <C-e> <plug>NERDTreeTabsToggle<CR>
+nnoremap <C-e> :NERDTreeToggle<CR>
+nnoremap <leader>d :NERDTreeFind<CR>
 let NERDTreeIgnore=['\.py[cd]$', '\~$', '\.swo$', '\.swp$', '^\.git$', '^\.hg$', '^\.svn$', '\.bzr$']
 
 let g:pymode = 0
@@ -195,18 +200,26 @@ let g:ycm_global_ycm_extra_conf = "~/.ycm_extra_conf.py"
 let g:ycm_confirm_extra_conf = 0
 
 " ClangFormat
-function ExecuteClangAutoFormat()
-    %py3f /usr/share/vim/addons/syntax/clang-format.py
-endfunction
-nmap <leader>z :call ExecuteClangAutoFormat()<cr>
+map <leader>f :py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
+map <leader>F :%py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
+
+" ClangFormat
+"function ExecuteClangAutoFormat()
+    "%py3f /usr/share/vim/addons/syntax/clang-format.py
+"endfunction
+"nmap <leader>z :call ExecuteClangAutoFormat()<cr>
 
 " Easy buffer navigation using TAB
 nmap <Tab> :bn<cr>
 nmap <S-Tab> :bp<cr>
 
+" Disable annoying ex command and change it into what
+" is the most frequent mistake when pressing Q
+nmap Q :bp<cr>
+
 " Map shortcuts to 'maximize/minimize' screen
-nmap <leader>ff :res<cr> :vertical res<cr>
-nmap <leader>fe :winc =<cr>
+"nmap <leader>ff :res<cr> :vertical res<cr>
+"nmap <leader>fe :winc =<cr>
 
 if has('nvim')
     let g:deoplete#enable_at_startup = 1
@@ -218,6 +231,119 @@ let g:neosnippet#enable_snipmate_compatibility = 1
 " Tell Neosnippet about the other snippets
 let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/'
 
+let g:LanguageClient_serverCommands = {
+    \ 'cpp': ['clangd-8']
+    \ }
+
+" Language client with background index
+"let g:LanguageClient_serverCommands = {
+    "\ 'cpp': ['clangd-8', '-background-index']
+    "\ }
+
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
+"
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+
+
+if has('nvim')
+tnoremap <ESC> <C-\><C-n>
+tnoremap <A-h> <C-\><C-N><C-w>h
+tnoremap <A-j> <C-\><C-N><C-w>j
+tnoremap <A-k> <C-\><C-N><C-w>k
+tnoremap <A-l> <C-\><C-N><C-w>l
+inoremap <A-h> <C-\><C-N><C-w>h
+inoremap <A-j> <C-\><C-N><C-w>j
+inoremap <A-k> <C-\><C-N><C-w>k
+inoremap <A-l> <C-\><C-N><C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
+endi
+
+" Fzf
+nmap <leader>o :Files<cr>
+nmap <leader>b :Buffers<cr>
+nmap <C-p> :Files<cr>
+nmap <F3> :Ag <C-R><C-W><cr>
+
+" LanguageClient
+nmap <F2> :call LanguageClient#textDocument_rename()<cr>
+nmap <F4> :call LanguageClient#textDocument_definition()<cr>
+
+" Bufferline
+let g:bufferline_active_buffer_left = '['
+let g:bufferline_active_buffer_right = ']'
+
+" BufOnly
+if filereadable(expand("~/.vim/BufOnly.vim"))
+    source ~/.vim/BufOnly.vim
+    nmap <C-Q> :BufOnly <cr>
+endif
+
+let g:BufKillCreateMappings = 0
+map <leader>x :BD<cr>
+
+map <leader>t :TlistToggle<cr>
+
+" Paste without overwrite
+vnoremap <leader>p "_dP
+
+" Toggle between header and source files
+function! HeaderToggle()
+let file_path = expand("%")
+let file_name = expand("%<")
+let extension = split(file_path, '\.')[-1]
+
+if extension == "cpp" || extension == "c"
+    let next_file = substitute(join([file_name, ".h"], ""), "src/", "include/", "")
+    let next_file2 = substitute(join([file_name, ".h"], ""), "src/", "inc/", "")
+    let next_file3 = join([file_name, ".h"], "")
+
+    if filereadable(next_file)
+        :execute 'edit ' next_file
+    elseif filereadable(next_file2)
+        :execute 'edit ' next_file2
+    elseif filereadable(next_file3)
+        :execute 'edit ' next_file3
+    endif
+elseif extension == "h"
+    let next_file = join([file_name, ".cpp"], "")
+    let next_file2 = join([file_name, ".c"], "")
+    let next_file3 = substitute(join([file_name, ".cpp"], ""), "include/", "src/", "")
+    let next_file4 = substitute(join([file_name, ".c"], ""), "include/", "src/", "")
+    let next_file5 = substitute(join([file_name, ".cpp"], ""), "inc/", "src/", "")
+    let next_file6 = substitute(join([file_name, ".c"], ""), "inc/", "src/", "")
+
+    if filereadable(next_file)
+        :execute 'edit ' next_file
+    elseif filereadable(next_file2)
+        :execute 'edit ' next_file2
+    elseif filereadable(next_file3)
+        :execute 'edit ' next_file3
+    elseif filereadable(next_file4)
+        :execute 'edit ' next_file4
+    elseif filereadable(next_file5)
+        :execute 'edit ' next_file5
+    elseif filereadable(next_file6)
+        :execute 'edit ' next_file6
+    endif
+endif
+endfunction
+
+nmap <F6> :call HeaderToggle()<cr>
+
+" airline customizations
+let g:airline_section_b = ""
+let g:airline_section_x = ""
+let g:airline_section_y = ""
+let g:airline_theme="solarized"
+
+
+map ; :
+noremap ;; ;

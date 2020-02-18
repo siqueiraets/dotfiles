@@ -17,7 +17,6 @@ Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
 Plugin 'rhysd/conflict-marker.vim'
 Plugin 'jiangmiao/auto-pairs'
-Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tacahiroy/ctrlp-funky'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'vim-scripts/sessionman.vim'
@@ -35,13 +34,15 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'godlygeek/tabular'
 Plugin 'majutsushi/tagbar'
-Plugin 'Shougo/neosnippet.vim'
-if has('nvim')
 Plugin 'Shougo/deoplete.nvim'
-else
-Plugin 'Valloric/YouCompleteMe'
+if !has('nvim')
+  Plugin 'roxma/nvim-yarp'
+  Plugin 'roxma/vim-hug-neovim-rpc'
 endif
-Plugin 'honza/vim-snippets'
+
+Plugin 'autozimu/LanguageClient-neovim'
+Plugin 'Shougo/neosnippet.vim'
+Plugin 'Shougo/neosnippet-snippets'
 
 Plugin 'klen/python-mode'
 Plugin 'yssource/python.vim'
@@ -51,6 +52,14 @@ Plugin 'pythoncomplete'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'benmills/vimux'
 
+Plugin 'file:///home/siqueira/software/fzf'
+Plugin 'junegunn/fzf.vim'
+Plugin 'vim-scripts/taglist.vim'
+
+Plugin 'qpkorr/vim-bufkill'
+
 " Required by Vundle
 call vundle#end()
 filetype plugin indent on
+
+
